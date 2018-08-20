@@ -7,7 +7,7 @@ type Node interface {
 }
 
 type Statement interface {
-	Nodes
+	Node
 	statementNode()
 }
 
@@ -35,7 +35,7 @@ type LetStatement struct {
 }
 
 func (ls *LetStatement) statementNode()       {}
-func (ls *LetStatement) TokenLiteral() string { return ls.Token.Line }
+func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
 
 type Identifier struct {
 	Token token.Token // token.IDENT
@@ -43,4 +43,4 @@ type Identifier struct {
 }
 
 func (i *Identifier) expressionNode()      {}
-func (i *Identifier) TokenLiteral() string { return i.Token.Line }
+func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
