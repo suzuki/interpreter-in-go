@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"fmt"
+
 	"github.com/suzuki/interpreter-in-go/src/monkey/ast"
 	"github.com/suzuki/interpreter-in-go/src/monkey/lexer"
 	"github.com/suzuki/interpreter-in-go/src/monkey/token"
@@ -9,12 +11,17 @@ import (
 type Parser struct {
 	l *lexer.Lexer
 
+	errors []string
+
 	curToken  token.Token
 	peekToken token.Token
 }
 
 func New(l *lexer.Lexer) *Parser {
-	p := &Parser{l: l}
+	p := &Parser{
+		l:      l,
+		errors: []string{},
+	}
 
 	// 最初に2回読むことで、 curToken, peekToken に値が入る
 	p.nextToken()
@@ -86,6 +93,16 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 		p.nextToken()
 		return true
 	} else {
+		p.peekError(t)
 		return false
 	}
+}
+
+func (p *Parser) Errors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(t token.TokenType) {
+	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
+	p.errors = append(p.errors, msg)
 }
